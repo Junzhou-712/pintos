@@ -8,6 +8,10 @@ The whole project works on M1 Macbook virtual lab machine, this instruction mayb
  ```
  ### Environment Configuration
  ```shell
+ $ brew tap nativeos/i386-elf-toolchain
+
+ $ brew install i386-elf-binutils i386-elf-gcc
+ 
  $ cd /opt/homebrew/bin/qemu-system-aarch64
 
  $ sudo ln -s qemu-system-aarch64 qemu
@@ -18,8 +22,8 @@ The whole project works on M1 Macbook virtual lab machine, this instruction mayb
 
  $ ../utils/pintos --qemu --run alarm-multiple
  ```
-### MacOS Clang Compile Problem
+### MacOS Clang Compile Issue
 
 Clang still cannot support some command that runs on gcc. For this project, we need to switch the current compiler to gcc to run it
 
-This [instruction](https://apple.stackexchange.com/questions/99077/how-to-set-gcc-4-8-as-default-gcc-compiler) would be helpful if you want to do that
+This [instruction](https://stackoverflow.com/questions/24380456/how-can-i-make-cmake-use-gcc-instead-of-clang-on-mac-os-x) would be helpful if you want to do that
