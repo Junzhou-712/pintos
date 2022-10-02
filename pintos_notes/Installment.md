@@ -4,7 +4,7 @@ The whole project works on M1 Macbook virtual lab machine, this instruction mayb
  ```shell
  # download qemu and pintos
  $ brew install qemu
- $ zcat pintos.tar.gz | tar x
+ $ git clone git://pintos-os.org/pintos-anon
  ```
  ### Environment Configuration
  ```shell
@@ -27,3 +27,7 @@ The whole project works on M1 Macbook virtual lab machine, this instruction mayb
 Clang still cannot support some command that runs on gcc. For this project, we need to switch the current compiler to gcc to run it
 
 This [instruction](https://stackoverflow.com/questions/24380456/how-can-i-make-cmake-use-gcc-instead-of-clang-on-mac-os-x) would be helpful if you want to do that
+
+### PintOS with qemu
+
+Refer to this [instruction](http://absolutelyrandomshit.blogspot.com/2017/09/errors-while-installing-pintos.html)
