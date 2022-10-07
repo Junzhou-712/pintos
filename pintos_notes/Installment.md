@@ -1,4 +1,4 @@
-# Installation
+# Installment
 The whole project works on M1 Macbook virtual lab machine, this instruction maybe less helpful for x86 users.
 
  ```shell
