@@ -35,3 +35,26 @@ switch_threads:
         ret
 .endfunc
 ```
+As for mission 1: **ALARM CLOCK**: I added several attributes and function  
+
+---- DATA STRUCTURES ----  
+```c
+    unsigned int block_ticks;/* Block ticks (control thread_sleep). */
+	void thread_check_blocked(struct thread *t, void *aux UNUSED); /* Check thread's status. If thread is blocked and its block ticks is greater than 0, minus 1 and check whether unblock it*/
+```
+---- ALGORITHMS ----
+```c
+/* Sleeps for approximately TICKS timer ticks.  Interrupts must be turned on. */
+
+void
+timer_sleep (int64_t ticks) 
+{
+  if (ticks <= 0) return; //edge case
+  ASSERT (!intr_context());
+  ASSERT (intr_get_level () == INTR_ON);
+  enum intr_level old_level = intr_disable(); // Prevete race conditions like multiple threads call or timer interrupt happens during timer_sleep()
+  thread_current()->block_ticks = ticks; // Assign thread block_ticks to ticks
+  thread_block();
+  intr_set_level(old_level);
+}
+```
