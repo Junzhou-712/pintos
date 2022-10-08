@@ -1,7 +1,7 @@
 # Project 1
 - Task 1: Recoginize functions structure  
 the first chanllenging function that I confronted is switch_threads in switch.S. As for this function, I am gonna leave the snippet and my own comments for reference. 
-```
+```x86asm
 switch_threads:
 	# Save caller's register state.
 	# According to struct switch_threads_frame defined in switch.h. Registers' stautus pushed in advance.
@@ -35,14 +35,17 @@ switch_threads:
         ret
 .endfunc
 ```
-As for mission 1: **ALARM CLOCK**: I added several attributes and function  
+<center>
+				 ALARM CLOCK
+</center>
+<center>---- DATA STRUCTURES ----</center>
 
----- DATA STRUCTURES ----  
 ```c
     unsigned int block_ticks;/* Block ticks (control thread_sleep). */
 	void thread_check_blocked(struct thread *t, void *aux UNUSED); /* Check thread's status. If thread is blocked and its block ticks is greater than 0, minus 1 and check whether unblock it*/
 ```
----- ALGORITHMS ----
+<center>---- ALGORITHMS ----</center>
+
 ```c
 /* Sleeps for approximately TICKS timer ticks.  Interrupts must be turned on. */
 
@@ -58,3 +61,7 @@ timer_sleep (int64_t ticks)
   intr_set_level(old_level);
 }
 ```
+<center>PRIORITY SCHEDULING</center>
+<center>---- DATA STRUCTURES ----</center>
+			 
+<center>---- ALGORITHMS ----</center>
