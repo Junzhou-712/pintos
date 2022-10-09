@@ -35,7 +35,7 @@ switch_threads:
         ret
 .endfunc
 ```
-<div align="center">ALARM CLOCK</div>
+<div align="center">A<small>LARM CLOCK</small></div>
 <div align="center">---- DATA STRUCTURES ----</div>
 
 ```c
@@ -61,7 +61,17 @@ timer_sleep (int64_t ticks)
   intr_set_level(old_level);
 }
 ```
-<div align="center">PRIORITY SCHEDULING</div>
+<div align="center">P<small>RIORITY SCHEDULING</small></div>
 <div align="center">---- DATA STRUCTURES ----</div>
-			 
+
+```c
+/* a compare function return true if a->priority > b->priority */  
+bool
+thread_more_priority >> list.h
+```
+However, the function above only solved the situation that scheduler insert a new thread to the list. If a thread call a function thread_set_priority to change its own priority we cannot handle this situation to release the resource and block the thread (if its priority is less than anyone in the ready list). So we add a function **thread_yiled()** following the thread priority changed.  
+[Priority Inversion](https://en.wikipedia.org/wiki/Priority_inversion) happened if we do not handle the shared resource is released properly when yielding. Thus, there are the snippets of priority inversion solution.  
+
+
+
 <div align="center">---- ALGORITHMS ----</div>
