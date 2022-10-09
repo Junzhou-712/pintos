@@ -39,10 +39,11 @@ switch_threads:
 <div align="center">---- DATA STRUCTURES ----</div>
 
 ```c
-	/* Block ticks (control thread_sleep). */
-    unsigned int block_ticks >> struct thread_t
-	/* Check thread's status. If thread is blocked and its block ticks is greater than 0, minus 1 and check whether unblock it*/
-	void thread_check_blocked(struct thread *t, void *aux UNUSED) >> thread.h 
+/* Block ticks (control thread_sleep). */
+unsigned int block_ticks >> struct thread_t
+/* Check thread's status. If thread is blocked and its block ticks is greater than 0, minus 1 and check whether unblock it*/
+void 
+thread_check_blocked(struct thread *t, void *aux UNUSED) >> thread.h 
 ```
 <div align="center">---- ALGORITHMS ----</div>
 
