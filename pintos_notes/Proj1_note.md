@@ -35,20 +35,19 @@ switch_threads:
         ret
 .endfunc
 ```
-<center>
-				 ALARM CLOCK
-</center>
-<center>---- DATA STRUCTURES ----</center>
+<div align="center">ALARM CLOCK</div>
+<div align="center">---- DATA STRUCTURES ----</div>
 
 ```c
-    unsigned int block_ticks;/* Block ticks (control thread_sleep). */
-	void thread_check_blocked(struct thread *t, void *aux UNUSED); /* Check thread's status. If thread is blocked and its block ticks is greater than 0, minus 1 and check whether unblock it*/
+	/* Block ticks (control thread_sleep). */
+    unsigned int block_ticks >> struct thread_t
+	/* Check thread's status. If thread is blocked and its block ticks is greater than 0, minus 1 and check whether unblock it*/
+	void thread_check_blocked(struct thread *t, void *aux UNUSED) >> thread.h 
 ```
-<center>---- ALGORITHMS ----</center>
+<div align="center">---- ALGORITHMS ----</div>
 
 ```c
 /* Sleeps for approximately TICKS timer ticks.  Interrupts must be turned on. */
-
 void
 timer_sleep (int64_t ticks) 
 {
@@ -61,7 +60,7 @@ timer_sleep (int64_t ticks)
   intr_set_level(old_level);
 }
 ```
-<center>PRIORITY SCHEDULING</center>
-<center>---- DATA STRUCTURES ----</center>
+<div align="center">PRIORITY SCHEDULING</div>
+<div align="center">---- DATA STRUCTURES ----</div>
 			 
-<center>---- ALGORITHMS ----</center>
+<div align="center">---- ALGORITHMS ----</div>
