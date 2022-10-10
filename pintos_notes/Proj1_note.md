@@ -70,8 +70,40 @@ bool
 thread_more_priority >> list.h
 ```
 However, the function above only solved the situation that scheduler insert a new thread to the list. If a thread call a function thread_set_priority to change its own priority we cannot handle this situation to release the resource and block the thread (if its priority is less than anyone in the ready list). So we add a function **thread_yiled()** following the thread priority changed.  
-[Priority Inversion](https://en.wikipedia.org/wiki/Priority_inversion) happened if we do not handle the shared resource is released properly when yielding. Thus, there are the snippets of priority inversion solution.  
+[Priority Inversion](https://en.wikipedia.org/wiki/Priority_inversion) happened if we do not handle the shared resource is released properly when yielding. Thus, there needs to have a design to solve priority inversion.  
+PintOS suggests priority donation to solve the share resource contension conflict, which basically improve the priority of the thread holds the lock (kinda like donation from the waiting list), when this thread's priority is less than the waiting one. When the thread releases the lock, it will convert its priority to original value.  
+To implement the functionality of priority donation, I added several functions for PintOS.
+```c
+/* Donate max_priority to the resource held the lock/sema */
+void
+thread_donate_priority(struct thread *donated)
+{
+  enum intr_level old_level = intr_disable();
+   thread_update_priority (donated);
+   if(donated->status == THREAD_READY) {
+    list_remove(&donated->elem);
+    list_insert_ordered (&ready_list, &donated->elem, thread_more_priority, NULL);
+   }
+  intr_set_level(old_level);
+}
 
-
+/* Update thread priority recursively */
+void
+thread_update_priority(struct thread *t)
+{
+  enum intr_level old_level = intr_disable();
+  int max_priority = t->origin_priority;
+  int lock_priority;
+  if(!list_empty(&t->locks)) {
+    list_sort(&t->locks, lock_more_priority, NULL);
+    lock_priority = list_entry(list_front(&t->locks), struct lock, elem)->max_priority;
+    if(lock_priority > max_priority) {
+      max_priority = lock_priority;
+    }
+  }
+  t->priority = max_priority;
+  intr_set_level(old_level);
+}
+```
 
 <div align="center">---- ALGORITHMS ----</div>
