@@ -68,6 +68,12 @@ timer_sleep (int64_t ticks)
 /* a compare function return true if a->priority > b->priority */  
 bool
 thread_more_priority >> list.h
+bool
+lock_more_priority >> list.h
+bool
+cond_sema_more_priority >> list.h
+struct
+semaphore_elem >> synch.h
 ```
 However, the function above only solved the situation that scheduler insert a new thread to the list. If a thread call a function thread_set_priority to change its own priority we cannot handle this situation to release the resource and block the thread (if its priority is less than anyone in the ready list). So we add a function **thread_yiled()** following the thread priority changed.  
 [Priority Inversion](https://en.wikipedia.org/wiki/Priority_inversion) happened if we do not handle the shared resource is released properly when yielding. Thus, there needs to have a design to solve priority inversion.  
@@ -107,3 +113,6 @@ thread_update_priority(struct thread *t)
 ```
 
 <div align="center">---- ALGORITHMS ----</div>
+Priority donation's logic could be revealed from the several test cases.
+
+<div align="center">A<small>DVANCED SCHEDULER</small></div>
