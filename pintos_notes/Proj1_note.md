@@ -113,6 +113,11 @@ thread_update_priority(struct thread *t)
 ```
 
 <div align="center">---- ALGORITHMS ----</div>
-Priority donation's logic could be revealed from the several test cases.
+Priority donation's logic could be revealed from the several test cases. the general rules are:  
+
+- Condition
 
 <div align="center">A<small>DVANCED SCHEDULER</small></div>
+<div align="center">---- DATA STRUCTURES ----</div>
+<div align="center">---- ALGORITHMS ----</div>
+mlfqs is the shorts for "multilevel feedback queue scheduling"
