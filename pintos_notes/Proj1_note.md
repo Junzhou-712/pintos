@@ -115,7 +115,10 @@ thread_update_priority(struct thread *t)
 <div align="center">---- ALGORITHMS ----</div>
 Priority donation's logic could be revealed from the several test cases. the general rules are:  
 
-- Condition
+  - Several Priority Queues
+    - semaphore->waiter
+    - struct condition
+  - Combine thread_yield() and thread_update_priority() (implemented above) to donate the priority to the thread using the shared resource.
 
 <div align="center">A<small>DVANCED SCHEDULER</small></div>
 <div align="center">---- DATA STRUCTURES ----</div>
