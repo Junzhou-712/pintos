@@ -119,6 +119,83 @@ Priority donation's logic could be revealed from the several test cases. the gen
     - semaphore->waiter
     - struct condition
   - Combine thread_yield() and thread_update_priority() (implemented above) to donate the priority to the thread using the shared resource.
+  - Nested donation: a thread's donation must be donated to not only its recipient, but also the thread its recipient is waiting on, which means that it is a recursive donation.
+  - Donation chain: the donation must propagate through an arbitrary number of nested donations.  
+When I tried to figure out these test cases, the test case "test_priority_donate_sema" stuck my progress. If we gonna solve this test case, the first thing is analyze the test source code.
+```c
+void
+test_priority_donate_sema (void)
+{
+  struct lock_and_sema ls;
+
+  /* This test does not work with the MLFQS. */
+  ASSERT (!thread_mlfqs);
+
+  /* Make sure our priority is the default. */
+  ASSERT (thread_get_priority () == PRI_DEFAULT);
+
+  lock_init (&ls.lock);
+  sema_init (&ls.sema, 0);
+  // sema assign to 0 initially
+  thread_create ("low", PRI_DEFAULT + 1, l_thread_func, &ls);
+  thread_create ("med", PRI_DEFAULT + 3, m_thread_func, &ls);
+  thread_create ("high", PRI_DEFAULT + 5, h_thread_func, &ls);
+  // sema_up V operation release resource awake low thread <- 4
+  sema_up (&ls.sema);
+  msg ("Main thread finished.");
+}
+
+static void
+l_thread_func (void *ls_)
+{
+  // lock_and_sema is a combination of lock and semaphore
+  struct lock_and_sema *ls = ls_;
+
+  lock_acquire (&ls->lock);
+  msg ("Thread L acquired lock.");
+  // low thread tries to acquire the lock and P operation blocks low thread <- 1 
+  // To satifiy this task, low thread was donated by high thread <- 4
+  sema_down (&ls->sema);
+  msg ("Thread L downed semaphore.");
+  // low thread released the lock awake high thread <- 5
+  lock_release (&ls->lock);
+  // low thread output the msg <- 8
+  msg ("Thread L finished.");
+
+}
+
+static void
+m_thread_func (void *ls_)
+{
+  struct lock_and_sema *ls = ls_;
+  // P operation blocks Med thread <- 2
+  sema_down (&ls->sema);
+  // med thread is awoken by 6 and output the msg <- 7
+  msg ("Thread M finished.");
+}
+
+static void
+h_thread_func (void *ls_)
+{
+  struct lock_and_sema *ls = ls_;
+  // High thread tries to acquire the lock and P operation blocks high thread <- 3
+  lock_acquire (&ls->lock);
+  msg ("Thread H acquired lock.");
+
+  sema_up (&ls->sema);
+  lock_release (&ls->lock);
+  // high thread V operation release the lock <- 6
+  msg ("Thread H finished.");
+}
+```
+The sequence of a series of events is:  
+1. low thread tries to acquire the lock and P operation blocks low thread <- 1 
+2. P operation blocks Med thread <- 2
+3. High thread tries to acquire the lock and P operation blocks high thread <- 3
+4. sema_up V operation release resource awake low thread <- 4
+5. low thread released the lock awake high thread <- 5
+6. high thread V operation release the lock <- 6
+7. med thread is awoken by 6 and output the msg <- 7
 
 <div align="center">A<small>DVANCED SCHEDULER</small></div>
 <div align="center">---- DATA STRUCTURES ----</div>
