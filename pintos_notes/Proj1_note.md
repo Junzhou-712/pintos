@@ -289,5 +289,14 @@ lock_acquire (struct lock *lock)
 ```
 <div align="center">A<small>DVANCED SCHEDULER</small></div>
 <div align="center">---- DATA STRUCTURES ----</div>
+
+- Nice value 
+  Function: int thread_get_nice (void)
+    Returns the current thread's nice value.
+  Function: void thread_set_nice (int new_nice)
+    Sets the current thread's nice value to new_nice and recalculates the thread's priority based on the new value.If the running thread no longer has the highest priority, yields.  
+-  There's a formula: $$recent_cpu = (2*load\_avg)/(2*load\_avg + 1) * recent\_cpu + nice$$
+where load_avg is a moving average of the number of threads ready to run (see below). If load_avg is 1, indicating that a single thread, on average, is competing for the CPU, then the current value of recent_cpu decays to a weight of .1 in ln(.1)/ln(2/3) = approx. 6 seconds; if load_avg is 2, then decay to a weight of .1 takes ln(.1)/ln(3/4) = approx. 8 seconds. The effect is that recent_cpu estimates the amount of CPU time the thread has received "recently," with the rate of decay inversely proportional to the number of threads competing for the CPU.
+
 <div align="center">---- ALGORITHMS ----</div>
 mlfqs is the shorts for "multilevel feedback queue scheduling"
