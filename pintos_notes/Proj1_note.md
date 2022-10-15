@@ -210,8 +210,7 @@ sema_up (struct semaphore *sema)
 
   if (!list_empty (&sema->waiters))  {
     list_sort(&sema->waiters, thread_more_priority, NULL);
-    thread_unblock (list_entry (list_pop_front (&sema->waiters),
-                                struct thread, elem));
+    thread_unblock (list_entry (list_pop_front (&sema->waiters),struct thread, elem));
   }
   sema->value++;
   thread_yield();
@@ -295,8 +294,25 @@ lock_acquire (struct lock *lock)
     Returns the current thread's nice value.
   Function: void thread_set_nice (int new_nice)
     Sets the current thread's nice value to new_nice and recalculates the thread's priority based on the new value.If the running thread no longer has the highest priority, yields.  
--  There's a formula: $$recent_cpu = (2*load\_avg)/(2*load\_avg + 1) * recent\_cpu + nice$$
-where load_avg is a moving average of the number of threads ready to run (see below). If load_avg is 1, indicating that a single thread, on average, is competing for the CPU, then the current value of recent_cpu decays to a weight of .1 in ln(.1)/ln(2/3) = approx. 6 seconds; if load_avg is 2, then decay to a weight of .1 takes ln(.1)/ln(3/4) = approx. 8 seconds. The effect is that recent_cpu estimates the amount of CPU time the thread has received "recently," with the rate of decay inversely proportional to the number of threads competing for the CPU.
+-  There's a formula: 
+  $$recent\_cpu = (2*load\_avg)/(2*load\_avg + 1) * recent\_cpu + nice$$
+where load_avg is a moving average of the number of threads ready to run (see below). If load_avg is 1, indicating that a single thread, on average, is competing for the CPU, then the current value of recent_cpu decays to a weight of .1 in ln(.1)/ln(2/3) = approx. 6 seconds; if load_avg is 2, then decay to a weight of .1 takes ln(.1)/ln(3/4) = approx. 8 seconds. The effect is that recent_cpu estimates the amount of CPU time the thread has received "recently," with the rate of decay inversely proportional to the number of threads competing for the CPU.  
+Before implementing the mlfqs, we should figure out PintOS does not support float number computing. The table below summarizes how fixed-point arithmetic operations can be implemented in C. In the table, x and y are fixed-point numbers, n is an integer, fixed-point numbers are in signed p.q format where p+q = 31, and f is 1<<q:
+
+|||
+|-|-|
+|Convert n to fixed point:|	n * f|
+|Convert x to integer (rounding toward zero):|	x / f|
+Convert x to integer (rounding to nearest):	(x + f / 2) / f if x >= 0, 
+(x - f / 2) / f if x <= 0.
+Add x and y:	x + y
+Subtract y from x:	x - y
+Add x and n:	x + n * f
+Subtract n from x:	x - n * f
+Multiply x by y:	((int64_t) x) * y / f
+Multiply x by n:	x * n
+Divide x by y:	((int64_t) x) * f / y
+Divide x by n:	x / n
 
 <div align="center">---- ALGORITHMS ----</div>
 mlfqs is the shorts for "multilevel feedback queue scheduling"
