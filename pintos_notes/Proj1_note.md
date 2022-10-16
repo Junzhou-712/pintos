@@ -313,7 +313,40 @@ Before implementing the mlfqs, we should figure out PintOS does not support floa
 |Divide x by y:|	((int64_t) x) * f / y|
 |Divide x by n:|	x / n|
 
-"thread/fixedpoint.h" will implement these arithmetics. I define FP_SHIFT_AMOUNT as the decimal part.
+"thread/fixedpoint.h" will implement these arithmetics. I define FP_SHIFT_AMOUNT as the decimal part, in other word, q = FP_SHIFT_AMOUNT, f = 1 << FP_SHIFT_AMOUNT.  
+Regarding mlfqs, PintOS provided some imcompleted functions that gives me some clues for the solution.  
+```c
+/* Returns the current thread's priority. */
+int
+thread_get_priority (void) 
+{
+  return thread_current ()->priority;
+}
+
+/* Sets the current thread's nice value to NICE. */
+void
+thread_set_nice (int nice UNUSED) 
+{
+  thread_current()->nice = nice;
+  thread_mlfqs_priority_update(thread_current());
+  thread_yield();
+}
+
+/* Returns the current thread's nice value. */
+int
+thread_get_nice (void) 
+{
+  return thread_current()->nice;
+}
+
+/* Returns 100 times the system load average. */
+int
+thread_get_load_avg (void) 
+{
+  return FP_ROUND(FP_MULT_N(load_avg, 100));
+}
+
+```
 
 <div align="center">---- ALGORITHMS ----</div>
 mlfqs is the shorts for "multilevel feedback queue scheduling"
