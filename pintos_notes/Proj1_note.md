@@ -303,16 +303,17 @@ Before implementing the mlfqs, we should figure out PintOS does not support floa
 |-|-|
 |Convert n to fixed point:|	n * f|
 |Convert x to integer (rounding toward zero):|	x / f|
-Convert x to integer (rounding to nearest):	(x + f / 2) / f if x >= 0, 
-(x - f / 2) / f if x <= 0.
-Add x and y:	x + y
-Subtract y from x:	x - y
-Add x and n:	x + n * f
-Subtract n from x:	x - n * f
-Multiply x by y:	((int64_t) x) * y / f
-Multiply x by n:	x * n
-Divide x by y:	((int64_t) x) * f / y
-Divide x by n:	x / n
+|Convert x to integer (rounding to nearest):	|(x + f / 2) / f if x >= 0,(x - f / 2) / f if x <= 0.|
+|Add x and y:|	x + y|
+|Subtract y from x:	|x - y|
+|Add x and n:|	x + n * f|
+|Subtract n from x:|	x - n * f|
+|Multiply x by y:| ((int64_t) x) * y / f|
+|Multiply x by n:|	x * n|
+|Divide x by y:|	((int64_t) x) * f / y|
+|Divide x by n:|	x / n|
+
+"thread/fixedpoint.h" will implement these arithmetics. I define FP_SHIFT_AMOUNT as the decimal part.
 
 <div align="center">---- ALGORITHMS ----</div>
 mlfqs is the shorts for "multilevel feedback queue scheduling"
