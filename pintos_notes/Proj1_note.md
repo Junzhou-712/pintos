@@ -77,8 +77,8 @@ semaphore_elem >> synch.h
 ```
 However, the function above only solved the situation that scheduler insert a new thread to the list. If a thread call a function thread_set_priority to change its own priority we cannot handle this situation to release the resource and block the thread (if its priority is less than anyone in the ready list). So we add a function **thread_yiled()** following the thread priority changed.  
 [Priority Inversion](https://en.wikipedia.org/wiki/Priority_inversion) happened if we do not handle the shared resource is released properly when yielding. Thus, there needs to have a design to solve priority inversion.  
-PintOS suggests priority donation to solve the share resource contension conflict, which basically improve the priority of the thread holds the lock (kinda like donation from the waiting list), when this thread's priority is less than the waiting one. When the thread releases the lock, it will convert its priority to original value.  
-To implement the functionality of priority donation, I added several functions for PintOS.
+Pintos suggests priority donation to solve the share resource contension conflict, which basically improve the priority of the thread holds the lock (kinda like donation from the waiting list), when this thread's priority is less than the waiting one. When the thread releases the lock, it will convert its priority to original value.  
+To implement the functionality of priority donation, I added several functions for Pintos.
 ```c
 /* Donate max_priority to the resource held the lock/sema */
 void
@@ -295,9 +295,12 @@ lock_acquire (struct lock *lock)
   Function: void thread_set_nice (int new_nice)
     Sets the current thread's nice value to new_nice and recalculates the thread's priority based on the new value.If the running thread no longer has the highest priority, yields.  
 -  There's a formula: 
-  $$recent\_cpu = (2*load\_avg)/(2*load\_avg + 1) * recent\_cpu + nice$$
+  $$priority = PRI\_MAX - (recent\_cpu / 4) - (nice * 2)\\
+  recent\_cpu = (2*load\_avg)/(2*load\_avg + 1) * recent\_cpu + nice\\
+  load\_avg = (59/60)*load\_avg + (1/60)*ready\_threads
+  $$
 where load_avg is a moving average of the number of threads ready to run (see below). If load_avg is 1, indicating that a single thread, on average, is competing for the CPU, then the current value of recent_cpu decays to a weight of .1 in ln(.1)/ln(2/3) = approx. 6 seconds; if load_avg is 2, then decay to a weight of .1 takes ln(.1)/ln(3/4) = approx. 8 seconds. The effect is that recent_cpu estimates the amount of CPU time the thread has received "recently," with the rate of decay inversely proportional to the number of threads competing for the CPU.  
-Before implementing the mlfqs, we should figure out PintOS does not support float number computing. The table below summarizes how fixed-point arithmetic operations can be implemented in C. In the table, x and y are fixed-point numbers, n is an integer, fixed-point numbers are in signed p.q format where p+q = 31, and f is 1<<q:
+Before implementing the mlfqs, we should figure out Pintos does not support float number computing. The table below summarizes how fixed-point arithmetic operations can be implemented in C. In the table, x and y are fixed-point numbers, n is an integer, fixed-point numbers are in signed p.q format where p+q = 31, and f is 1<<q:
 
 |||
 |-|-|
@@ -314,7 +317,7 @@ Before implementing the mlfqs, we should figure out PintOS does not support floa
 |Divide x by n:|	x / n|
 
 "thread/fixedpoint.h" will implement these arithmetics. I define FP_SHIFT_AMOUNT as the decimal part, in other word, q = FP_SHIFT_AMOUNT, f = 1 << FP_SHIFT_AMOUNT.  
-Regarding mlfqs, PintOS provided some imcompleted functions that gives me some clues for the solution.  
+Regarding mlfqs, Pintos provided some imcompleted functions that gives me some clues for the solution.  
 ```c
 /* Returns the current thread's priority. */
 int
