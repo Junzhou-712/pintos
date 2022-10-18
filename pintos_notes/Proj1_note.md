@@ -353,3 +353,4 @@ thread_get_load_avg (void)
 
 <div align="center">---- ALGORITHMS ----</div>
 mlfqs is the shorts for "multilevel feedback queue scheduling"
+
