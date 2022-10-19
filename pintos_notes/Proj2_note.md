@@ -7,6 +7,13 @@ This filename is "raw" in the sense that it contains both the executable name an
 user_program arg1 arg2 arg3 arg4
 Which means when a thread is created with thread_create in this function to run the user program, you will notice that the thread is named the raw filename:
 tid = thread_create(file_name, PRI_DEFAULT, start_process, fn_copy);
+> Write each argument (including the executable name) in reverse order, as well as in reverse for each string, to the stack. Remember to write a \0 for each argument. memcpy will come in handy here.
+Write the necessary number of 0s to word-align to 4 bytes. A little modulus math and memset will get the job done.
+Write the last argument, consisting of four bytes of 0’s.
+Write the addresses pointing to each of the arguments. You’ll need to figure out how to reference the addresses after writing all the arguments. These are char* s.
+Write the address of argv[0]. This will be a char**.
+Write the number of arguments (argc). Make sure that this spans over 4 bytes.
+Write a NULL pointer as the return address. This will be a void*.
 ```c
 #ifndef USERPROG_PROCESS_H
 #define USERPROG_PROCESS_H
