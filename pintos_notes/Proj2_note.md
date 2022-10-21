@@ -29,3 +29,4 @@ void process_activate (void);
 #endif /* userprog/process.h */
 ```
 In process.c, we can find start_process function call load() for the file, load attempt to execute the file and set up the stack.
+Except that, there're also some intresting function we need to analyze.
